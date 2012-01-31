@@ -3,7 +3,7 @@
 History.txt
 MIT-LICENSE
 Manifest.txt
-README.md
+README.rdoc
 Rakefile
 Rakefile.cross
 doc/build_install.txt
