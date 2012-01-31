@@ -20,6 +20,7 @@ require 'rake/extensiontask'
 require 'rake/clean'
 require 'rubygems/package_task'
 require 'rake/testtask'
+load 'Rakefile.cross'
 
 # Generate html docs from the markdown source and upload to the site.
 # All doc files that are destined for the website have filenames that
@@ -31,8 +32,8 @@ NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 # defines columns in the HTML extension list
 GLEXT_VERSIONS = ["svn","0.60","0.50"]
 
-CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so", 
-              "ext/**/*.bundle", "lib/*.so", "lib/*.bundle", "ext/*/*.o{,bj}", 
+CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so",
+              "ext/**/*.bundle", "lib/*.so", "lib/*.bundle", "ext/*/*.o{,bj}",
               "ext/*/*.lib", "ext/*/*.exp", "ext/*/*.pdb",
               "pkg")
 CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
@@ -136,9 +137,17 @@ spec = Gem::Specification.new do |s|
     s.extensions     = []
 end
 
-Rake::ExtensionTask.new 'gl', spec
-Rake::ExtensionTask.new 'glu', spec
-Rake::ExtensionTask.new 'glut', spec
+ext_block = proc do |ext|
+  ext.cross_compile = true
+  ext.cross_platform = ['i386-mingw32']
+  ext.cross_config_options += [
+    "--with-installed-dir=#{STATIC_INSTALLDIR}",
+  ]
+end
+
+Rake::ExtensionTask.new 'gl', spec, &ext_block
+Rake::ExtensionTask.new 'glu', spec, &ext_block
+Rake::ExtensionTask.new 'glut', spec, &ext_block
 
 desc "builds binary gem on any platform"
 task :binary_gem => [:default] do

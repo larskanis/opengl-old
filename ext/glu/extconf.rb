@@ -14,10 +14,10 @@ def have_framework(fw, &b)
 end unless respond_to? :have_framework
 
 ok =
-  (have_library('opengl32.lib', 'glVertex3d') &&
-   have_library('glu32.lib',    'gluLookAt')) ||
-  (have_library('opengl32', 'glVertex3d') &&
-   have_library('glu32',    'gluLookAt')) ||
+  (have_library('opengl32.lib') &&
+   have_library('glu32.lib')) ||
+  (have_library('opengl32') &&
+   have_library('glu32')) ||
   (have_library('GL',  'glVertex3d') &&
    have_library('GLU', 'gluLookAt')) ||
   have_framework('OpenGL')
@@ -29,10 +29,6 @@ ok &&=
 ok &&=
   have_header('GL/glu.h') ||
   have_header('OpenGL/glu.h') # OS X
-
-ok &&=
-  have_header('GL/glut.h') ||
-  have_header('GLUT/glut.h') # OS X
 
 have_header 'GL/glx.h'  # *NIX only?
 have_header 'dlfcn.h'   # OS X dynamic loader
