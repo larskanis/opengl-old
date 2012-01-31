@@ -17,6 +17,8 @@
 
 #include "../common/common.h"
 
+static const char *VERSION = "0.7.0";
+
 static VALUE module;
 
 void gl_init_enums(VALUE);
@@ -182,12 +184,12 @@ GLint CheckBufferBinding(GLint buffer)
 
 DLLEXPORT void Init_gl()
 {
-	VALUE VERSION = rb_str_new2("0.60");
+	VALUE vVERSION = rb_str_new2(VERSION);
 
 	module = rb_define_module("Gl");
 
-	rb_define_const(module, "BINDINGS_VERSION", VERSION);
-	rb_define_const(module, "RUBY_OPENGL_VERSION", VERSION);
+	rb_define_const(module, "BINDINGS_VERSION", vVERSION);
+	rb_define_const(module, "RUBY_OPENGL_VERSION", vVERSION);
 
 	gl_init_error(module);
 	gl_init_enums(module);

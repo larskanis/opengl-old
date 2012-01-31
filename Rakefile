@@ -20,6 +20,7 @@ require 'rake/extensiontask'
 require 'rake/clean'
 require 'rubygems/package_task'
 require 'rake/testtask'
+require 'hoe'
 load 'Rakefile.cross'
 
 # Generate html docs from the markdown source and upload to the site.
@@ -41,18 +42,6 @@ CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
 # Make sure these files aren't deleted in a clobber op
 CLOBBER.exclude("website/images/tab_bottom.gif")
 CLOBBER.exclude("website/images/*.jpg")
-
-desc 'Does a full compile'
-task :default => [:compile, :fixpermissions]
-
-task :fixpermissions do
-	# fix wrong lib permissions (mkrf bug ?)
-	Dir["lib/*.so","lib/*.bundle"].each do |fname|
-		File.chmod(0755,fname)
-	end
-end
-
-task :extension => :default
 
 desc 'Show contents of some variables related to website doc generation.'
 task :explain_website do
@@ -106,36 +95,26 @@ task :upload_entire_website => [:gen_website] do
     sh "scp -r website/images hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
 end
 
-desc 'Runs unit tests.'
-Rake::TestTask.new do |t|
-    t.libs << "test"
-    t.test_files = FileList['test/tc_*.rb']
-    t.verbose = true
-end
-
-desc 'Runs unit tests.'
-task :test_all => [:test]
-
 
 
 
 ############# gems #############
 
-# common specification for source and binary gems
-spec = Gem::Specification.new do |s|
-    s.name              = "ruby-opengl"
-    s.version           = "0.60.1"
-    s.authors           = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam" ]
-    s.homepage          = "http://ruby-opengl.rubyforge.org"
-    s.email             = "ruby-opengl-devel@rubyforge.org"
-    s.rubyforge_project = 'ruby-opengl'
-    s.platform          = Gem::Platform::RUBY
-    s.summary           = "OpenGL Interface for Ruby"
-    s.require_path      = "lib"
-    s.autorequire       = "gl"
-    s.has_rdoc          = false
-    s.extensions     = []
+
+hoe = Hoe.spec "opengl" do
+  self.author = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam" ]
+  self.email = "ruby-opengl-devel@rubyforge.org"
+  self.url = "http://ruby-opengl.rubyforge.org"
+  self.rubyforge_name = 'ruby-opengl'
+  self.version = IO.read("ext/gl/gl.c")[/VERSION += +([\"\'])([\d][\w\.]+)\1/] && $2
+  self.local_rdoc_dir = 'rdoc'
+  self.readme_file = 'README.md'
+  self.extra_rdoc_files << self.readme_file
+
+  spec_extras[:extensions] = ['ext/gl/extconf.rb', 'ext/glu/extconf.rb', 'ext/glut/extconf.rb']
+  extra_dev_deps << ['rake-compiler', '>= 0.8']
 end
+
 
 ext_block = proc do |ext|
   ext.cross_compile = true
@@ -145,48 +124,6 @@ ext_block = proc do |ext|
   ]
 end
 
-Rake::ExtensionTask.new 'gl', spec, &ext_block
-Rake::ExtensionTask.new 'glu', spec, &ext_block
-Rake::ExtensionTask.new 'glut', spec, &ext_block
-
-desc "builds binary gem on any platform"
-task :binary_gem => [:default] do
-
-  binary_gem_files = FileList["{lib,examples}/**/*"] + FileList["doc/*.txt"] + ["MIT-LICENSE","README.txt"]
-  binary_spec = spec.dup
-  binary_spec.files = binary_gem_files
-  binary_spec.platform = Config::CONFIG['arch']
-
-  gem_fname_ext = ".gem"
-  if (RUBY_VERSION.split(".").join < "190")
-    binary_spec.required_ruby_version = '~> 1.8.0'
-  else
-    binary_spec.required_ruby_version = '>= 1.9.0'
-    gem_fname_ext = "-ruby19.gem"
-  end
-
-  Gem::Builder.new( binary_spec ).build
-
-  Dir.mkdir("pkg") rescue {}
-  unless (fname = Dir["ruby-opengl*.gem"]).empty?
-    fname = fname.first
-    newfname = fname[0..-5] + gem_fname_ext
-    mv fname, "pkg/#{newfname}"
-  end
-end
-
-# Create a task for creating a ruby source gem
-Gem::PackageTask.new(spec) do |pkg|
-  # Define the files that will go into the source gem
-  gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
-  gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile", "lib/*.bundle")
-
-  spec.files = gem_files
-  spec.extensions << 'ext/gl/extconf.rb'
-  spec.extensions << 'ext/glu/extconf.rb'
-  spec.extensions << 'ext/glut/extconf.rb'
-  spec.add_development_dependency("rake")
-  spec.add_development_dependency("rake-compiler", "~> 0.7", ">= 0.7.9")
-  pkg.gem_spec = spec
-  pkg.need_tar = true
-end
+Rake::ExtensionTask.new 'gl', hoe.spec, &ext_block
+Rake::ExtensionTask.new 'glu', hoe.spec, &ext_block
+Rake::ExtensionTask.new 'glut', hoe.spec, &ext_block
