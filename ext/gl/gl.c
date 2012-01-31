@@ -17,7 +17,7 @@
 
 #include "../common/common.h"
 
-static const char *VERSION = "0.7.0";
+static const char *VERSION = "0.7.0.pre1";
 
 static VALUE module;
 
