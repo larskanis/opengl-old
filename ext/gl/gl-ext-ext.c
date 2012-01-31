@@ -45,8 +45,8 @@ VALUE obj,arg1,arg2;
 		rb_raise(rb_eArgError, "passed arrays must have the same length");
 	textures = ALLOC_N(GLuint,size);
 	priorities = ALLOC_N(GLclampf,size);
-	ary2cuint(arg1,textures,size);	
-	ary2cflt(arg2,priorities,size);	
+	ary2cuint(arg1,textures,size);
+	ary2cflt(arg2,priorities,size);
 	fptr_glPrioritizeTexturesEXT(size,textures,priorities);
 	xfree(textures);
 	xfree(priorities);
@@ -71,7 +71,7 @@ VALUE obj,arg1;
 	size = (GLsizei)RARRAY_LENINT(ary);
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
-	ary2cuint(ary,textures,size);	
+	ary2cuint(ary,textures,size);
 	r = fptr_glAreTexturesResidentEXT(size,textures,residences);
 	retary = rb_ary_new2(size);
 	if (r==GL_TRUE) { /* all are resident */
@@ -245,9 +245,8 @@ VALUE obj;
 	GLsizei *counts;
 	GLvoid **indices;
 	GLint size;
-	RArray *ary;
 	int i;
-	VALUE args[4];
+	VALUE ary, args[4];
 	LOAD_GL_FUNC(glMultiDrawElementsEXT,"GL_EXT_multi_draw_arrays")
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
@@ -257,7 +256,7 @@ VALUE obj;
 			mode = (GLenum)NUM2INT(args[0]);
 			type = (GLenum)NUM2INT(args[1]);
 			Check_Type(args[2],T_ARRAY);
-			ary = RARRAY(args[2]);
+			ary = args[2];
 			size = (GLsizei)RARRAY_LENINT(ary);
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
