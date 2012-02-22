@@ -13,8 +13,16 @@ def have_framework(fw, &b)
   end
 end unless respond_to? :have_framework
 
-dir_config("installed")
-$defs.push "-DGLUT_DISABLE_ATEXIT_HACK"
+if ENV['CROSS_COMPILING']
+  dir_config("installed")
+
+  $defs.push "-DGLUT_DISABLE_ATEXIT_HACK"
+  $defs.push "-DFREEGLUT_EXPORTS"
+
+  # libfreeglut is linked to gdi32 and winmm
+  have_library( 'gdi32', 'CreateDC' ) && append_library( $libs, 'gdi32' )
+  have_library( 'winmm', 'timeBeginPeriod' ) && append_library( $libs, 'winmm' )
+end
 
 ok =
   (have_library('opengl32.lib') &&
