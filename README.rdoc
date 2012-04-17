@@ -24,7 +24,7 @@ the OpenGL, GLU, and GLUT libraries.
 
 == INSTALL:
 
-* gem install opengl
+ gem install opengl --pre
 
 == Cross compiling for Windows
 
