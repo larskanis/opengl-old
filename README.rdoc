@@ -31,7 +31,7 @@ Ruby 1.9.2+ only, on master branch: https://github.com/larskanis/opengl
 
 == Install
 
- gem install opengl -v "~>0.7.0"
+ gem install opengl -v "~>0.7.0" --pre
 
 == Cross compiling for Windows
 
