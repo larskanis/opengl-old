@@ -109,6 +109,7 @@ hoe = Hoe.spec "opengl" do
   self.version = IO.read("ext/gl/gl.c")[/VERSION += +([\"\'])([\d][\w\.]+)\1/] && $2
   self.local_rdoc_dir = 'rdoc'
   self.readme_file = 'README.rdoc'
+  self.history_file = 'History.rdoc'
   self.extra_rdoc_files << self.readme_file
 
   spec_extras[:extensions] = ['ext/gl/extconf.rb', 'ext/glu/extconf.rb', 'ext/glut/extconf.rb']
