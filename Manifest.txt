@@ -1,6 +1,6 @@
 .gemtest
 .gitignore
-History.txt
+History.rdoc
 MIT-LICENSE
 Manifest.txt
 README.rdoc
