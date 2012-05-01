@@ -1,5 +1,6 @@
 === 0.7.0 / Branch 0.7 HEAD
 
+* OSX: Removed leading underscore in dlsym-call
 * Switch to Hoe and rake-compiler
 * Add cross compilation of fat binary gems for Windows with freeglut
 * Replace mkrf with extconf.rb
