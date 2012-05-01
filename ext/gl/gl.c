@@ -17,6 +17,8 @@
 
 #include "../common/common.h"
 
+static const char *VERSION = "0.7.0.pre1";
+
 static VALUE module;
 
 void gl_init_enums(VALUE);
@@ -78,7 +80,7 @@ const char *GetOpenglExtensions(void)
 		const char *estr = (const char *) glGetString(GL_EXTENSIONS);
 		CHECK_GLERROR
 		if (estr) {
-			int len = strlen(estr);
+			long len = strlen(estr);
 			opengl_extensions = ALLOC_N(GLchar,len+1+1); /* terminating null and added space */
 			strcpy(opengl_extensions,estr);
 			opengl_extensions[len] = ' '; /* add space char for easy searchs */
@@ -94,7 +96,7 @@ GLboolean CheckExtension(const char *name)
 {
 	const char *extensions;
 	char *name_tmp;
-	int name_len;
+	long name_len;
 	GLboolean res;
 	
 	extensions = GetOpenglExtensions();
@@ -182,12 +184,12 @@ GLint CheckBufferBinding(GLint buffer)
 
 DLLEXPORT void Init_gl()
 {
-	VALUE VERSION = rb_str_new2("0.60");
+	VALUE vVERSION = rb_str_new2(VERSION);
 
 	module = rb_define_module("Gl");
 
-	rb_define_const(module, "BINDINGS_VERSION", VERSION);
-	rb_define_const(module, "RUBY_OPENGL_VERSION", VERSION);
+	rb_define_const(module, "BINDINGS_VERSION", vVERSION);
+	rb_define_const(module, "RUBY_OPENGL_VERSION", vVERSION);
 
 	gl_init_error(module);
 	gl_init_enums(module);
