@@ -17,7 +17,7 @@
 
 #include "../common/common.h"
 
-static const char *VERSION = "0.7.0.pre1";
+static const char *VERSION = "0.7.0.pre2";
 
 static VALUE module;
 
@@ -87,7 +87,7 @@ const char *GetOpenglExtensions(void)
 			opengl_extensions[len+1] = '\0';
 		}
 	}
-	return opengl_extensions;	
+	return opengl_extensions;
 }
 
 /* Checks if extension is supported by the current OpenGL implementation
@@ -98,9 +98,9 @@ GLboolean CheckExtension(const char *name)
 	char *name_tmp;
 	long name_len;
 	GLboolean res;
-	
+
 	extensions = GetOpenglExtensions();
-	
+
 	if(extensions==NULL)
 		return GL_FALSE;
 
@@ -117,7 +117,7 @@ GLboolean CheckExtension(const char *name)
 		res = GL_FALSE;
 
 	xfree(name_tmp);
-	return res;	
+	return res;
 }
 
 /* wrapper for CheckOpenglVersion and CheckExtension, also used by macros
@@ -129,7 +129,7 @@ GLboolean CheckVersionExtension(const char *name)
 
 		if (sscanf( name, "%d.%d", &major, &minor ) != 2)
 				return GL_FALSE;
-	
+
 		return (CheckOpenglVersion(major,minor));
 	} else {
 		return (CheckExtension(name));
@@ -160,7 +160,7 @@ VALUE obj,arg1;
 GLint CheckBufferBinding(GLint buffer)
 {
 	GLint result = 0;
-	
+
 	/* check if the buffer functionality is supported */
 	switch(buffer) {
 		case GL_ARRAY_BUFFER_BINDING:
