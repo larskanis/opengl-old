@@ -77,7 +77,7 @@ module GLUT
 
 	Glut.constants.each do |cn|
 		n = cn.to_s.sub(/^GLUT_/,'')
-		const_set( n, Glut.const_get( cn ) )
+		const_set( n, Glut.const_get( cn ) ) if  /^[A-Za-z_]/ =~ n
 	end
 
 	Glut.methods( false ).each do |mn|
