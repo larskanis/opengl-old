@@ -1100,6 +1100,17 @@ void Init_glut() {
 	rb_define_const(mGlut, "GLUT_CURSOR_NONE", INT2NUM(GLUT_CURSOR_NONE));
 	rb_define_const(mGlut, "GLUT_CURSOR_FULL_CROSSHAIR", INT2NUM(GLUT_CURSOR_FULL_CROSSHAIR));
 
+
+	// Some OSX specific constants
+#ifdef GLUT_NO_RECOVERY
+	rb_define_const(mGlut, "GLUT_NO_RECOVERY", INT2NUM(GLUT_NO_RECOVERY));
+#endif
+
+#ifdef GLUT_3_2_CORE_PROFILE
+	rb_define_const(mGlut, "GLUT_3_2_CORE_PROFILE", INT2NUM(GLUT_3_2_CORE_PROFILE));
+#endif
+
+
 	/* hardcoded, see bitmap_font_map for explanation */
 	rb_define_const(mGlut, "GLUT_BITMAP_9_BY_15", INT2NUM(0));
 	rb_define_const(mGlut, "GLUT_BITMAP_8_BY_13", INT2NUM(1));

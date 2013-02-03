@@ -26,6 +26,7 @@ hoe = Hoe.spec 'opengl' do
   developer 'Jan Dvorak',  ''
   developer 'Minh Thu Vo', ''
   developer 'James Adam',  ''
+  developer 'Gaz Liddon',  'gaz@gazaxian.com'
 
   self.readme_file = 'README.rdoc'
   self.history_file = 'History.rdoc'
